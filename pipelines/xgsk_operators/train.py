@@ -11,7 +11,7 @@ from sklearn.preprocessing import StandardScaler, Imputer, OneHotEncoder, Functi
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.ensemble import RandomForestClassifier
 
-from transform import get_categorical_data, get_numeric_data, split_data
+from transform import get_categorical_data, get_numeric_data, split_data, clean_data
 
 def build_model(pickle_file, log_file, model_path):
 	# create model
@@ -54,7 +54,31 @@ def build_model(pickle_file, log_file, model_path):
 	joblib.dump(model_path)
 	print('Serialized Model.')
 
-def train_model(csv_file, log_file, model_path):
-	pass
+def retrain_model(csv_file, log_file, model_path):	
+	# load model
+	model = joblib.load(model_path)
+
+	# load data
+	data = clean_data(csv_file)
+	x_train, x_test, y_train, y_test = split_data(data)
+
+	# train
+	model.fit(x_train, y_train)
+
+	# log score
+	score = pipeline.score(x_test, y_test)
+		with open(log_file, 'a') as outfile:
+			outfile.write('%s - Score: %s' % (datetime.now().strftime('%Y-%m-%d:%H:%m'), score))
+			print(score)
+
+	# serialize mdoel
+	joblib.dump(model_path)
+	print('Serialized Model.')
+
+
+
+
+
+
 
 

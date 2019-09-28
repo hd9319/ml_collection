@@ -37,7 +37,7 @@ def split_data(data, test_size=0.3):
 	                                                    stratify=data[stratify_columns])
 	return x_train, x_test, y_train, y_test
 
-def clean_data(csv_file):
+def clean_data(csv_file, save=None, pickle_file=None):
 	# read data
 	data = pd.read_csv(csv_file)
 
@@ -76,3 +76,13 @@ def clean_data(csv_file):
 	    
 	# remove irrelevant columns
 	data = data.drop(irrelevant_columns, axis=1)
+
+	if save and pickle_file:
+		data.to_pickle(pickle_file)
+		print('Saved File')
+
+	else:
+		return data
+
+
+		
